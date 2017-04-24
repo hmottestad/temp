@@ -1,0 +1,222 @@
+@prefix : <http://data.einnsyn.no/virksomhetmeta/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://data.einnsyn.no/virksomhetmeta/> .
+
+<http://data.einnsyn.no/virksomhetmeta/> rdf:type owl:Ontology .
+
+#################################################################
+#    Object Properties
+#################################################################
+
+###  http://data.einnsyn.no/virksomhetmeta/kontaktperson
+:kontaktperson rdf:type owl:ObjectProperty .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/parent
+:parent rdf:type owl:ObjectProperty .
+
+
+#################################################################
+#    Data properties
+#################################################################
+
+###  http://data.einnsyn.no/virksomhetmeta/adresse
+:adresse rdf:type owl:DatatypeProperty ;
+         rdfs:range xsd:string .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/avsluttetDato
+:avsluttetDato rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:dateTime .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/epost
+:epost rdf:type owl:DatatypeProperty ;
+       rdfs:range xsd:string .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/forkortelse
+:forkortelse rdf:type owl:DatatypeProperty ;
+             rdfs:range xsd:string .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/navn
+:navn rdf:type owl:DatatypeProperty .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/oppdatertDato
+:oppdatertDato rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:dateTime .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/opprettetDato
+:opprettetDato rdf:type owl:DatatypeProperty ;
+               rdfs:range xsd:dateTime .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/orgnummer
+:orgnummer rdf:type owl:DatatypeProperty ;
+           rdfs:range xsd:string .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/skjult
+:skjult rdf:type owl:DatatypeProperty ;
+        rdfs:range xsd:boolean .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/telefon
+:telefon rdf:type owl:DatatypeProperty ;
+         rdfs:range xsd:string .
+
+
+#################################################################
+#    Classes
+#################################################################
+
+###  http://data.einnsyn.no/virksomhetmeta/AdministrativEnhet
+:AdministrativEnhet rdf:type owl:Class ;
+                    rdfs:subClassOf :Enhet ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :parent ;
+                                      owl:allValuesFrom :Enhet
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :forkortelse ;
+                                      owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                      owl:onDataRange xsd:string
+                                    ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Bydel
+:Bydel rdf:type owl:Class ;
+       rdfs:subClassOf :Enhet ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :parent ;
+                         owl:allValuesFrom :DummyEnhet
+                       ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/DummyEnhet
+:DummyEnhet rdf:type owl:Class ;
+            rdfs:subClassOf :Enhet ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :parent ;
+                              owl:allValuesFrom [ rdf:type owl:Class ;
+                                                  owl:unionOf ( :DummyEnhet
+                                                                :Virksomhet
+                                                              )
+                                                ]
+                            ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Enhet
+:Enhet rdf:type owl:Class ;
+       rdfs:subClassOf [ rdf:type owl:Restriction ;
+                         owl:onProperty :parent ;
+                         owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onClass :Enhet
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :oppdatertDato ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onDataRange xsd:dateTime
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :opprettetDato ;
+                         owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onDataRange xsd:dateTime
+                       ] ,
+                       [ rdf:type owl:Restriction ;
+                         owl:onProperty :skjult ;
+                         owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                         owl:onDataRange xsd:boolean
+                       ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Kommune
+:Kommune rdf:type owl:Class ;
+         rdfs:subClassOf :Enhet ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :parent ;
+                           owl:allValuesFrom :DummyEnhet
+                         ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Kontaktperson
+:Kontaktperson rdf:type owl:Class ;
+               rdfs:subClassOf [ rdf:type owl:Restriction ;
+                                 owl:onProperty :epost ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onDataRange xsd:string
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :navn ;
+                                 owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                                 owl:onDataRange xsd:string
+                               ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Organ
+:Organ rdf:type owl:Class ;
+       rdfs:subClassOf :Enhet .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Utvalg
+:Utvalg rdf:type owl:Class ;
+        rdfs:subClassOf :Enhet ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :parent ;
+                          owl:allValuesFrom [ rdf:type owl:Class ;
+                                              owl:unionOf ( :Bydel
+                                                            :Kommune
+                                                            :Organ
+                                                          )
+                                            ]
+                        ] .
+
+
+###  http://data.einnsyn.no/virksomhetmeta/Virksomhet
+:Virksomhet rdf:type owl:Class ;
+            rdfs:subClassOf :Enhet ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :parent ;
+                              owl:allValuesFrom [ rdf:type owl:Class ;
+                                                  owl:unionOf ( :DummyEnhet
+                                                                :Virksomhet
+                                                              )
+                                                ]
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :kontaktperson ;
+                              owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                              owl:onClass :Kontaktperson
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :adresse ;
+                              owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                              owl:onDataRange xsd:string
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :epost ;
+                              owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                              owl:onDataRange xsd:string
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :telefon ;
+                              owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                              owl:onDataRange xsd:string
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :avsluttetDato ;
+                              owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+                              owl:onDataRange xsd:dateTime
+                            ] ;
+            owl:hasKey ( :navn
+                       ) .
+
+
+###  Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi
